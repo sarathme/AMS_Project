@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const validator = require('validator');
+const bcrypt = require('bcryptjs');
 
 const empSchema = new mongoose.Schema({
   name: {
@@ -16,10 +18,13 @@ const empSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please enter your email address'],
     unique: [true, 'Email already exixts'],
+    lowercase: true,
+    validate: [validator.isEmail, 'Please enter a valid email address'],
   },
   password: {
     type: String,
     required: [true, 'Please enter your password'],
+    minlength: 8,
   },
   confirmPassword: {
     type: String,
@@ -36,6 +41,14 @@ const empSchema = new mongoose.Schema({
     default: 'employee',
     enum: ['employee', 'admin', 'manager'],
   },
+  photo: String,
+});
+
+empSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next;
+  this.password = await bcrypt.hash(this.password, 12);
+  this.confirmPassword = undefined;
+  next();
 });
 
 const Employee = mongoose.model('Employee', empSchema);

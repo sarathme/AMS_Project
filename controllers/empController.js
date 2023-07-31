@@ -13,17 +13,6 @@ exports.getAllEmployees = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.createEmp = catchAsync(async (req, res, next) => {
-  const newEmp = await Employee.create(req.body);
-  res.status(200).json({
-    status: 'success',
-    results: 1,
-    data: {
-      newEmp,
-    },
-  });
-});
-
 exports.getEmployee = catchAsync(async (req, res, next) => {
   const employee = await Employee.findById(req.params.id);
   if (!employee) {

@@ -1,12 +1,12 @@
 const express = require('express');
 const empController = require('../controllers/empController');
+const authController = require('../controllers/authController');
 
 const router = express.Router();
 
-router
-  .route('/')
-  .get(empController.getAllEmployees)
-  .post(empController.createEmp);
+router.post('/signup', authController.signup);
+
+router.route('/').get(empController.getAllEmployees);
 
 router.route('/:id').get(empController.getEmployee);
 
