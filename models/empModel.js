@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-
 const empSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -17,7 +16,6 @@ const empSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please enter your email address'],
     unique: [true, 'Email already exixts'],
-    
   },
   password: {
     type: String,
@@ -36,6 +34,7 @@ const empSchema = new mongoose.Schema({
   role: {
     type: String,
     default: 'employee',
+    enum: ['employee', 'admin', 'manager'],
   },
 });
 

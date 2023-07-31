@@ -8,4 +8,6 @@ router
   .get(empController.getAllEmployees)
   .post(empController.createEmp);
 
+router.route('/:id').get(empController.getEmployee);
+
 module.exports = router;

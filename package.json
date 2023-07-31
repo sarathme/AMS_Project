@@ -12,7 +12,8 @@
   "description": "Attendance Management System WH Project",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "start:prod": "NODE_ENV=production start server.js"
   },
   "author": "Sarasraman",
   "license": "ISC",
