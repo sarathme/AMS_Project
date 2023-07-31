@@ -25,6 +25,7 @@ const empSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please enter your password'],
     minlength: 8,
+    select: false,
   },
   confirmPassword: {
     type: String,
@@ -44,12 +45,21 @@ const empSchema = new mongoose.Schema({
   photo: String,
 });
 
+//Works only on save and create
+
 empSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next;
   this.password = await bcrypt.hash(this.password, 12);
   this.confirmPassword = undefined;
   next();
 });
+
+empSchema.methods.correctPassword = async function (
+  enteredPassword,
+  userPassword,
+) {
+  return await bcrypt.compare(enteredPassword, userPassword);
+};
 
 const Employee = mongoose.model('Employee', empSchema);
 
