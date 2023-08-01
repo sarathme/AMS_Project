@@ -30,6 +30,7 @@ const empSchema = new mongoose.Schema({
   confirmPassword: {
     type: String,
     required: [true, 'Please enter your password'],
+
     validate: {
       validator: function (data) {
         return data === this.password;
@@ -43,6 +44,11 @@ const empSchema = new mongoose.Schema({
     enum: ['employee', 'admin', 'manager'],
   },
   photo: String,
+  workData: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: 'WorkModel',
+  },
+  passwordChangedAt: Date,
 });
 
 //Works only on save and create
@@ -54,11 +60,25 @@ empSchema.pre('save', async function (next) {
   next();
 });
 
+// Instance methods
 empSchema.methods.correctPassword = async function (
   enteredPassword,
   userPassword,
 ) {
   return await bcrypt.compare(enteredPassword, userPassword);
+};
+
+empSchema.methods.changedPassword = function (JWTTimeStamp) {
+  if (this.passwordChangedAt) {
+    const changedTimeStamp = parseInt(
+      this.passwordChangedAt.getTime() / 1000,
+      10,
+    );
+
+    return changedTimeStamp < JWTTimeStamp;
+  }
+
+  return false;
 };
 
 const Employee = mongoose.model('Employee', empSchema);
