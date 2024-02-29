@@ -3,6 +3,10 @@ const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 
 exports.getAllEmployees = catchAsync(async (req, res, next) => {
+  if (req.user.role !== 'admin')
+    return next(
+      new AppError(`You don't have permission to access this page`, 401),
+    );
   const employees = await Employee.find();
   res.status(200).json({
     status: 'success',
@@ -14,15 +18,16 @@ exports.getAllEmployees = catchAsync(async (req, res, next) => {
 });
 
 exports.getEmployee = catchAsync(async (req, res, next) => {
-  const employee = await Employee.findById(req.params.id);
-  if (!employee) {
-    return next(new AppError('No Tour found with the ID', 404));
+  if (req.params.id !== req.user._id.valueOf()) {
+    return next(
+      new AppError('Invalid entry Please login with your credentials', 400),
+    );
   }
 
   res.status(200).json({
     status: 'success',
     data: {
-      employee,
+      employee: req.user,
     },
   });
 });

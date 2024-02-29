@@ -11,17 +11,17 @@ const signToken = (id) =>
   });
 
 exports.signup = catchAsync(async (req, res, next) => {
-  const work = await Work.create({
-    date: Date.now(),
-    empCode: req.body.empCode,
-  });
+  // const work = await Work.create({
+  //   date: Date.now(),
+  //   empCode: req.body.empCode,
+  // });
+
   const newEmp = await Employee.create({
     name: req.body.name,
     email: req.body.email,
     password: req.body.password,
     confirmPassword: req.body.confirmPassword,
     empCode: req.body.empCode,
-    workData: work,
   });
 
   const token = signToken(newEmp._id);
@@ -55,8 +55,7 @@ exports.login = catchAsync(async (req, res, next) => {
   }
 
   // Generate token for the user
-
-  const token = signToken(employee._id);
+  const token = signToken(employee._id.valueOf());
   const work = await Work.create({
     date: Date.now(),
     empCode: employee.empCode,
